@@ -12,6 +12,8 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
   const [categories, setCategories] = useState([]);
 
   const [originalData] = useState(articles);
+  const [filteredData, setFilteredData] = useState(articles);
+
   const [dateRange, setDateRange] = useState({ fromDate: "", toDate: "" });
   const [selectedFilters, setSelectedFilters] = useState({
     source: "",
@@ -32,7 +34,7 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
 
   useEffect(() => {
     if (originalData?.length > 0) {
-      let filteredArticles = originalData;
+      let filteredArticles = filteredData;
 
       // Apply query filter
       if (query) {
@@ -85,39 +87,41 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
 
     setQuery("");
     setDateError("");
-    setArticles(originalData);
     setDateRange({ fromDate: "", toDate: "" });
     setSelectedFilters({ source: "", category: "" });
   };
 
   const handleNavigation = (type) => {
+    if (selectedNav == type) return;
     setSelectedNav(type);
 
     if (type === "feed") {
       setArticles(originalData);
+      setFilteredData(originalData);
     } else {
       const favoriteList = favorites[type] || [];
-      const filteredArticles = originalData.filter((article) =>
-        favoriteList.includes(article[type])
+      const filteredArticles = originalData?.filter((article) =>
+        favoriteList?.includes(article[type])
       );
 
       setArticles(filteredArticles);
+      setFilteredData(filteredArticles);
     }
   };
 
   return (
-    <div className="my-4 px-20">
+    <div className="my-4 px-20 xs:px-10">
       <p
         onClick={onReset}
         className="text-right cursor-pointer font-semibold text-[#315376]"
       >
         Clear Filters
       </p>
-      <div className="flex justify-between gap-4">
-        <div className="space-x-8">
-          {["feed", "author", "category", "source"].map((type) => (
+      <div className="flex custom:flex-col xs:flex-col justify-between gap-4">
+        <div className="xs:grid xs:grid-cols-1 xs:space-x-0 xs:gap-3 space-x-8">
+          {["feed", "author", "category", "source"].map((type, index) => (
             <a
-              key={type}
+              key={index}
               onClick={() => handleNavigation(type)}
               className={`font-semibold text-gray-600 underline cursor-pointer ${
                 selectedNav === type
