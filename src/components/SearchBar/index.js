@@ -3,71 +3,105 @@ import Dropdown from "../Dropdown";
 import DateField from "../DateField";
 import InputField from "../InputField";
 
-const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
+const SearchBar = ({ articles, favorites, setArticles }) => {
   const [query, setQuery] = useState("");
-  const [toDate, setToDate] = useState("");
-  const [source, setSource] = useState("");
-  const [fromDate, setFromDate] = useState("");
-  const [category, setCategory] = useState("");
-  const [originalData, setOriginalData] = useState();
+  const [dateError, setDateError] = useState("");
   const [selectedNav, setSelectedNav] = useState("feed");
-  const [selectedSource, setSelectedSource] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const [sources, setSources] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [originalData] = useState(articles);
+  const [dateRange, setDateRange] = useState({ fromDate: "", toDate: "" });
+  const [selectedFilters, setSelectedFilters] = useState({
+    source: "",
+    category: "",
+  });
 
   useEffect(() => {
-    setOriginalData(articles);
-  }, []);
+    const uniqueCategories = [
+      ...new Set(originalData.map((article) => article.category)),
+    ];
+    setCategories(uniqueCategories);
+
+    const uniqueSources = [
+      ...new Set(originalData.map((article) => article.source)),
+    ];
+    setSources(uniqueSources);
+  }, [originalData]);
 
   useEffect(() => {
-    const categoriesTemp = articles.reduce((acc, cur) => {
-      if (!acc.includes(cur.category)) {
-        return [...acc, cur.category];
-      }
-      return acc;
-    }, []);
-    setCategory(categoriesTemp);
+    if (originalData?.length > 0) {
+      let filteredArticles = originalData;
 
-    const sourcesTemp = articles.reduce((acc, cur) => {
-      if (!acc.includes(cur.source)) {
-        return [...acc, cur.source];
+      // Apply query filter
+      if (query) {
+        const queryLower = query.toLowerCase();
+        filteredArticles = filteredArticles?.filter(
+          (article) =>
+            article?.title?.toLowerCase()?.includes(queryLower) ||
+            article?.description?.toLowerCase()?.includes(queryLower)
+        );
       }
-      return acc;
-    }, []);
-    setSource(sourcesTemp);
-  }, [articles]);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    onSearch({ query, fromDate, toDate, selectedCategory, selectedSource });
-  };
+      // Apply category filter
+      if (selectedFilters.category) {
+        filteredArticles = filteredArticles?.filter(
+          (article) => article.category === selectedFilters.category
+        );
+      }
+
+      // Apply source filter
+      if (selectedFilters.source) {
+        filteredArticles = filteredArticles?.filter(
+          (article) => article?.source === selectedFilters?.source
+        );
+      }
+
+      // Apply date filter
+      if (dateRange?.fromDate || dateRange?.toDate) {
+        const { fromDate, toDate } = dateRange;
+        if (fromDate && toDate && new Date(fromDate) > new Date(toDate)) {
+          setDateError("From date cannot be later than To date.");
+          return;
+        }
+        setDateError(""); // Clear error if dates are valid
+
+        filteredArticles = filteredArticles?.filter((article) => {
+          const articleDate = new Date(article?.date);
+          return (
+            (!fromDate || articleDate >= new Date(fromDate)) &&
+            (!toDate || articleDate <= new Date(toDate))
+          );
+        });
+      }
+
+      setArticles(filteredArticles);
+    }
+  }, [query, dateRange, selectedFilters, originalData]);
 
   const onReset = (e) => {
     e.preventDefault();
 
     setQuery("");
-    setToDate("");
-    setFromDate("");
-    setSelectedSource("");
-    setSelectedCategory("");
-
-    onSearch();
+    setDateError("");
+    setArticles(originalData);
+    setDateRange({ fromDate: "", toDate: "" });
+    setSelectedFilters({ source: "", category: "" });
   };
 
   const handleNavigation = (type) => {
     setSelectedNav(type);
-    switch (type) {
-      case "feed":
-        setArticles(originalData);
-        break;
-      default:
-        const _favorites = favorites[type];
-        const dataTemp = originalData?.filter((data) => {
-          const separated = String(data[type]).split(",");
-          return _favorites?.some((fav) => separated.includes(fav));
-        });
 
-        setArticles(dataTemp);
-        break;
+    if (type === "feed") {
+      setArticles(originalData);
+    } else {
+      const favoriteList = favorites[type] || [];
+      const filteredArticles = originalData.filter((article) =>
+        favoriteList.includes(article[type])
+      );
+
+      setArticles(filteredArticles);
     }
   };
 
@@ -81,46 +115,21 @@ const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
       </p>
       <div className="flex justify-between gap-4">
         <div className="space-x-8">
-          <a
-            onClick={() => handleNavigation("feed")}
-            className={`font-semibold text-gray-600 underline cursor-pointer ${
-              selectedNav === "feed"
-                ? "selected"
-                : "hover:text-gray-900 hover:text-lg"
-            }`}
-          >
-            Feed
-          </a>
-          <a
-            onClick={() => handleNavigation("author")}
-            className={`font-semibold text-gray-600 underline cursor-pointer ${
-              selectedNav === "author"
-                ? "selected"
-                : "hover:text-gray-900 hover:text-lg"
-            }`}
-          >
-            Favorite Authors
-          </a>
-          <a
-            onClick={() => handleNavigation("category")}
-            className={`font-semibold text-gray-600 underline cursor-pointer ${
-              selectedNav === "category"
-                ? "selected"
-                : "hover:text-gray-900 hover:text-lg"
-            }`}
-          >
-            Favorite Categories
-          </a>
-          <a
-            onClick={() => handleNavigation("source")}
-            className={`font-semibold text-gray-600 underline cursor-pointer ${
-              selectedNav === "source"
-                ? "selected"
-                : "hover:text-gray-900 hover:text-lg"
-            }`}
-          >
-            Favorite Sources
-          </a>
+          {["feed", "author", "category", "source"].map((type) => (
+            <a
+              key={type}
+              onClick={() => handleNavigation(type)}
+              className={`font-semibold text-gray-600 underline cursor-pointer ${
+                selectedNav === type
+                  ? "selected"
+                  : "hover:text-gray-900 hover:text-lg"
+              }`}
+            >
+              {type === "feed"
+                ? "Feed"
+                : `Favorite ${type.charAt(0).toUpperCase() + type.slice(1)}s`}
+            </a>
+          ))}
         </div>
 
         <InputField
@@ -134,42 +143,45 @@ const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
       </div>
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div>
+          <DateField
+            value={dateRange.fromDate}
+            label="From Date"
+            placeholder="From date"
+            onChange={(e) =>
+              setDateRange({ ...dateRange, fromDate: e.target.value })
+            }
+          />
+          {dateError && <p className="text-red-500">{dateError}</p>}
+        </div>
+
         <DateField
-          value={fromDate}
-          label="From Date"
-          placeholder="From date"
-          onChange={(e) => setFromDate(e.target.value)}
-        />
-        <DateField
-          value={toDate}
+          value={dateRange.toDate}
           label="To Date"
           placeholder="To date"
-          onChange={(e) => setToDate(e.target.value)}
+          onChange={(e) =>
+            setDateRange({ ...dateRange, toDate: e.target.value })
+          }
         />
 
         <Dropdown
           label="Category"
           name="category"
-          options={category}
-          value={selectedCategory}
-          onValueChange={(e) => setSelectedCategory([e.target.value])}
+          options={categories}
+          value={selectedFilters.category}
+          onValueChange={(e) =>
+            setSelectedFilters({ ...selectedFilters, category: e.target.value })
+          }
         />
         <Dropdown
           label="Sources"
           name="sources"
-          options={source}
-          value={selectedSource}
-          onValueChange={(e) => setSelectedSource([e.target.value])}
+          options={sources}
+          value={selectedFilters.source}
+          onValueChange={(e) =>
+            setSelectedFilters({ ...selectedFilters, source: e.target.value })
+          }
         />
-      </div>
-
-      <div className="flex justify-end pt-2">
-        <button
-          onClick={handleSearch}
-          className="rounded-lg bg-blue-600 px-8 py-1.5 font-medium text-white outline-none hover:opacity-80 focus:ring"
-        >
-          Apply
-        </button>
       </div>
     </div>
   );

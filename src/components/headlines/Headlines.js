@@ -9,6 +9,7 @@ export const Headlines = ({ newest, favorites, toggleFavorite }) => {
           <Card
             article={item}
             favorites={favorites}
+            showDescription={index == 0}
             toggleFavorite={toggleFavorite}
           />
         </div>

@@ -29,7 +29,7 @@ export default function Card({
       className="bg-white border-2 rounded-md px-6 py-2 flex flex-col text-white"
       style={{ backgroundImage: `url(${image})` }}
     >
-      <div className="flex gap-3 title">
+      <div className="flex items-center gap-3 title">
         <p className="text-lg uppercase px-2">{category}</p>
         <Icon
           src={
@@ -51,12 +51,12 @@ export default function Card({
       </div>
 
       {showDescription && (
-        <div className="py-4 flex-grow title">
+        <div className="py-4  title">
           <p>{description}</p>
         </div>
       )}
 
-      <div className="flex gap-1 title">
+      <div className="flex items-center gap-1 title">
         <p className="text-lg px-2">{author}</p>
         <Icon
           src={
@@ -73,7 +73,7 @@ export default function Card({
         />
       </div>
 
-      <div className="flex gap-2 title px-2">
+      <div className="flex gap-2 title px-2 items-center">
         <p>{moment(date).format("YYYY-DD-MM")}</p>
         <p>{source}</p>
         <Icon

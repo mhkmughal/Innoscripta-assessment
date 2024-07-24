@@ -1,7 +1,6 @@
 import axios from "axios";
 
-// const NEWS_API_KEY = "355b5f5a84994b2ebff25d0f7622a0c8"; // Replace with your NewsAPI key
-const NEWS_API_KEY = "762e0135fce44e1ead51e9b0ce18f0b2";
+const NEWS_API_KEY = "355b5f5a84994b2ebff25d0f7622a0c8"; // Replace with your NewsAPI key
 const GUARDIAN_API_KEY = "8e289141-51f6-4342-a5d0-4a9b1246bc71"; // Replace with your Guardian API key
 
 const buildQueryString = (params) => {

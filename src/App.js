@@ -64,9 +64,7 @@ const App = () => {
           <SearchBar
             articles={articles}
             favorites={favorites}
-            onSearch={handleSearch}
             setArticles={setArticles}
-            toggleFavorite={toggleFavorite}
           />
           {articles?.length > 0 && (
             <ArticleList
