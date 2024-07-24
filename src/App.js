@@ -24,9 +24,6 @@ const App = () => {
 
   const handleSearch = async (filters) => {
     try {
-      console.log("Filters", filters);
-
-
       setLoading(true);
       const bbcArticles = await fetchBbcArticles(filters);
       const newsApiArticles = await fetchNewsApiArticles(filters);
@@ -46,12 +43,12 @@ const App = () => {
   const toggleFavorite = (type, value) => {
     setFavorites((prevFavorites) => {
       const currentFavorites = prevFavorites[type];
-      const isAlreadyFavorite = currentFavorites.includes(value);
+      const isAlreadyFavorite = currentFavorites?.includes(value);
 
       return {
         ...prevFavorites,
         [type]: isAlreadyFavorite
-          ? currentFavorites.filter((item) => item !== value)
+          ? currentFavorites?.filter((item) => item !== value)
           : [...currentFavorites, value],
       };
     });
@@ -69,15 +66,14 @@ const App = () => {
             favorites={favorites}
             onSearch={handleSearch}
             setArticles={setArticles}
+            toggleFavorite={toggleFavorite}
           />
-          {articles?.length > 0 ? (
+          {articles?.length > 0 && (
             <ArticleList
               articles={articles}
               favorites={favorites}
               toggleFavorite={toggleFavorite}
             />
-          ) : (
-            "No favorite"
           )}
         </>
       )}

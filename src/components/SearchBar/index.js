@@ -18,21 +18,6 @@ const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
     setOriginalData(articles);
   }, []);
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    onSearch({ query, fromDate, toDate, selectedCategory, selectedSource });
-  };
-
-  const onReset = (e) => {
-    e.preventDefault();
-
-    setQuery("");
-    setToDate("");
-    setSource("");
-    setFromDate("");
-    setCategory("");
-  };
-
   useEffect(() => {
     const categoriesTemp = articles.reduce((acc, cur) => {
       if (!acc.includes(cur.category)) {
@@ -51,6 +36,23 @@ const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
     setSource(sourcesTemp);
   }, [articles]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    onSearch({ query, fromDate, toDate, selectedCategory, selectedSource });
+  };
+
+  const onReset = (e) => {
+    e.preventDefault();
+
+    setQuery("");
+    setToDate("");
+    setFromDate("");
+    setSelectedSource("");
+    setSelectedCategory("");
+
+    onSearch();
+  };
+
   const handleNavigation = (type) => {
     setSelectedNav(type);
     switch (type) {
@@ -59,9 +61,9 @@ const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
         break;
       default:
         const _favorites = favorites[type];
-        const dataTemp = originalData.filter((data) => {
-          const saperated = String(data[type]).split(",");
-          return _favorites?.some((fav) => saperated.includes(fav));
+        const dataTemp = originalData?.filter((data) => {
+          const separated = String(data[type]).split(",");
+          return _favorites?.some((fav) => separated.includes(fav));
         });
 
         setArticles(dataTemp);

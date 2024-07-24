@@ -5,7 +5,7 @@ const Icon = ({
   src,
   alt = "",
   onClick,
-  className = "w-6 h-6 cursor-pointer",
+  className = "w-5 h-5 cursor-pointer",
 }) => <img src={src} alt={alt} className={className} onClick={onClick} />;
 
 export default function Card({
