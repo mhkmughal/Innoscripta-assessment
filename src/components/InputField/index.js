@@ -8,7 +8,7 @@ export default function InputField({
   onInputChange,
 }) {
   const onInputChangeLocal = (e) => {
-    if (type == "number" && max) {
+    if (type === "number" && max) {
       if (e.target.value < max + 1) {
         onInputChange(e);
       }
@@ -19,10 +19,7 @@ export default function InputField({
 
   return (
     <div>
-      <label
-        htmlFor={label}
-        className="text-sm font-medium text-stone-600"
-      >
+      <label htmlFor={label} className="text-sm font-medium text-stone-600">
         {label}
       </label>
       <div>
@@ -32,7 +29,7 @@ export default function InputField({
           value={value}
           placeholder={placeholder}
           onChange={onInputChangeLocal}
-          className="h-[45px] mt-1 w-full cursor-text rounded-md border border-gray-100 bg-gray-100 p-4 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+          className="h-9 px-2 mt-1 w-full cursor-text rounded-md border border-gray-100 bg-gray-100 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
         />
       </div>
     </div>

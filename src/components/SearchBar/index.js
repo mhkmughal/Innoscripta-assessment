@@ -3,16 +3,24 @@ import Dropdown from "../Dropdown";
 import DateField from "../DateField";
 import InputField from "../InputField";
 
-const SearchBar = ({ articles, onSearch }) => {
+const SearchBar = ({ articles, favorites, setArticles, onSearch }) => {
   const [query, setQuery] = useState("");
   const [toDate, setToDate] = useState("");
   const [source, setSource] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [category, setCategory] = useState("");
+  const [originalData, setOriginalData] = useState();
+  const [selectedNav, setSelectedNav] = useState("feed");
+  const [selectedSource, setSelectedSource] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    setOriginalData(articles);
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    onSearch({ query, fromDate, toDate, category, source });
+    onSearch({ query, fromDate, toDate, selectedCategory, selectedSource });
   };
 
   const onReset = (e) => {
@@ -43,15 +51,76 @@ const SearchBar = ({ articles, onSearch }) => {
     setSource(sourcesTemp);
   }, [articles]);
 
+  const handleNavigation = (type) => {
+    setSelectedNav(type);
+    switch (type) {
+      case "feed":
+        setArticles(originalData);
+        break;
+      default:
+        const _favorites = favorites[type];
+        const dataTemp = originalData.filter((data) => {
+          const saperated = String(data[type]).split(",");
+          return _favorites?.some((fav) => saperated.includes(fav));
+        });
+
+        setArticles(dataTemp);
+        break;
+    }
+  };
+
   return (
-    <>
+    <div className="my-4 px-20">
       <p
         onClick={onReset}
         className="text-right cursor-pointer font-semibold text-[#315376]"
       >
         Clear Filters
       </p>
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+      <div className="flex justify-between gap-4">
+        <div className="space-x-8">
+          <a
+            onClick={() => handleNavigation("feed")}
+            className={`font-semibold text-gray-600 underline cursor-pointer ${
+              selectedNav === "feed"
+                ? "selected"
+                : "hover:text-gray-900 hover:text-lg"
+            }`}
+          >
+            Feed
+          </a>
+          <a
+            onClick={() => handleNavigation("author")}
+            className={`font-semibold text-gray-600 underline cursor-pointer ${
+              selectedNav === "author"
+                ? "selected"
+                : "hover:text-gray-900 hover:text-lg"
+            }`}
+          >
+            Favorite Authors
+          </a>
+          <a
+            onClick={() => handleNavigation("category")}
+            className={`font-semibold text-gray-600 underline cursor-pointer ${
+              selectedNav === "category"
+                ? "selected"
+                : "hover:text-gray-900 hover:text-lg"
+            }`}
+          >
+            Favorite Categories
+          </a>
+          <a
+            onClick={() => handleNavigation("source")}
+            className={`font-semibold text-gray-600 underline cursor-pointer ${
+              selectedNav === "source"
+                ? "selected"
+                : "hover:text-gray-900 hover:text-lg"
+            }`}
+          >
+            Favorite Sources
+          </a>
+        </div>
+
         <InputField
           type="text"
           name="search"
@@ -60,6 +129,9 @@ const SearchBar = ({ articles, onSearch }) => {
           placeholder="Search articles..."
           onInputChange={(e) => setQuery(e.target.value)}
         />
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         <DateField
           value={fromDate}
           label="From Date"
@@ -73,19 +145,31 @@ const SearchBar = ({ articles, onSearch }) => {
           onChange={(e) => setToDate(e.target.value)}
         />
 
-        <Dropdown label="Category" name="category" options={category} />
-        <Dropdown label="Sources" name="sources" options={source} />
+        <Dropdown
+          label="Category"
+          name="category"
+          options={category}
+          value={selectedCategory}
+          onValueChange={(e) => setSelectedCategory([e.target.value])}
+        />
+        <Dropdown
+          label="Sources"
+          name="sources"
+          options={source}
+          value={selectedSource}
+          onValueChange={(e) => setSelectedSource([e.target.value])}
+        />
       </div>
 
       <div className="flex justify-end pt-2">
         <button
           onClick={handleSearch}
-          class="rounded-lg bg-blue-600 px-8 py-1.5 font-medium text-white outline-none hover:opacity-80 focus:ring"
+          className="rounded-lg bg-blue-600 px-8 py-1.5 font-medium text-white outline-none hover:opacity-80 focus:ring"
         >
           Apply
         </button>
       </div>
-    </>
+    </div>
   );
 };
 

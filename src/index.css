@@ -2,23 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: inter;
-  width: 95%;
-  margin: 0 auto;
-  background: #0b3349;
-}
-
-.logo {
   width: 100%;
-  margin-bottom: 10px;
-  background-color: hsla(0, 0%, 100%, 0.9);
+  margin: 0 auto;
+  font-family: inter;
 }
 
 .title {
@@ -54,4 +41,13 @@ body {
   100% {
     transform: rotate(1turn);
   }
+}
+
+.selected {
+  font-weight: bolder;
+  font-size: larger;
+  color: #25b09b;
+}
+.selected:hover{
+  color: none;
 }
