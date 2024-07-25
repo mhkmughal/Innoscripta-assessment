@@ -37,7 +37,7 @@ export const fetchNewsApiArticles = async ({
       date: item.publishedAt,
       author: item.author
         ? String(item.author).split(",").slice(0, 2).join(",")
-        : "",
+        : "Kate",
       source: item.source.name,
       category: "entertainment",
       url: item.url,
@@ -117,7 +117,7 @@ export const fetchBbcArticles = async ({
       date: item.publishedAt,
       author: item.author
         ? String(item.author).split(",").slice(0, 2).join(",")
-        : "",
+        : "Kate",
       source: item.source.name,
       category: "entertainment",
       url: item.url,

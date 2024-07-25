@@ -3,13 +3,7 @@
 @tailwind utilities;
 
 body {
-  width: 100%;
-  margin: 0 auto;
   font-family: inter;
-}
-
-.title {
-  background-color: rgba(15, 58, 80, 0.4);
 }
 
 .loader {
@@ -48,6 +42,6 @@ body {
   font-size: larger;
   color: #25b09b;
 }
-.selected:hover{
+.selected:hover {
   color: none;
 }

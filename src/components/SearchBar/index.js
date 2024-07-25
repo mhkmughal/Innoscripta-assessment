@@ -92,7 +92,7 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
   };
 
   const handleNavigation = (type) => {
-    if (selectedNav == type) return;
+    if (selectedNav === type) return;
     setSelectedNav(type);
 
     if (type === "feed") {

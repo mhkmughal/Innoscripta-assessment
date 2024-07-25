@@ -2,6 +2,7 @@ import "./headline.css";
 import Card from "../Card";
 
 export const Headlines = ({ newest, favorites, toggleFavorite }) => {
+  console.log("Newest", newest);
   return (
     <div className="headlines">
       {newest?.map((item, index) => (
@@ -9,7 +10,8 @@ export const Headlines = ({ newest, favorites, toggleFavorite }) => {
           <Card
             article={item}
             favorites={favorites}
-            showDescription={index == 0}
+            showImage={index==0}
+            showDescription={index === 0}
             toggleFavorite={toggleFavorite}
           />
         </div>
