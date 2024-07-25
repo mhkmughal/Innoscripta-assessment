@@ -10,7 +10,7 @@ export const Headlines = ({ newest, favorites, toggleFavorite }) => {
           <Card
             article={item}
             favorites={favorites}
-            showImage={index==0}
+            showImage={index === 0}
             showDescription={index === 0}
             toggleFavorite={toggleFavorite}
           />

@@ -4,7 +4,7 @@ import { Headlines } from "../headlines/Headlines";
 
 const ArticleList = ({ articles, favorites, toggleFavorite }) => {
   return (
-    <div className="w-11/12 p-5 mx-auto">
+    <div className="w-11/12 px-5 mx-auto">
       <Headlines
         favorites={favorites}
         newest={articles.slice(0, 3)}

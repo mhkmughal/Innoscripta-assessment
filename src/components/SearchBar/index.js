@@ -131,7 +131,11 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
             >
               {type === "feed"
                 ? "Feed"
-                : `Favorite ${type.charAt(0).toUpperCase() + type.slice(1)}s`}
+                : `Favorite ${
+                    type === "category"
+                      ? "Categorie"
+                      : type.charAt(0).toUpperCase() + type.slice(1)
+                  }s`}
             </a>
           ))}
         </div>
@@ -170,7 +174,7 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
 
         <Dropdown
           label="Category"
-          name="category"
+          name="Categories"
           options={categories}
           value={selectedFilters.category}
           onValueChange={(e) =>
@@ -179,7 +183,7 @@ const SearchBar = ({ articles, favorites, setArticles }) => {
         />
         <Dropdown
           label="Sources"
-          name="sources"
+          name="Sources"
           options={sources}
           value={selectedFilters.source}
           onValueChange={(e) =>

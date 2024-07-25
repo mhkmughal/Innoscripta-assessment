@@ -64,8 +64,9 @@ export default function Card({
 
       <hr className="mx-4 mb-2 bg-activeColor h-1" />
 
-      <div className="flex justify-between items-center font-serif font-semibold gap-1 px-4 pb-3">
+      <div className="flex custom:flex-col custom:items-start xs:flex-col xs:items-start justify-between items-center font-serif font-semibold gap-1 px-4 pb-3">
         <div className="flex gap-2 items-center text-lg text-activeColor">
+          <p>{source}</p>
           <Icon
             src={
               favorites?.source.includes(source)
@@ -79,7 +80,6 @@ export default function Card({
             }
             onClick={() => toggleFavorite("source", source)}
           />
-          <p>{source}</p>
         </div>
 
         <div className="flex gap-3 items-center">
